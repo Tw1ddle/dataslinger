@@ -1,21 +1,19 @@
-#include <iostream>
-
 #include <QApplication>
 
+#include "app/app.h"
 #include "ui/mainwindow.h"
-
-#include "dataslinger/dataslinger.h"
 
 int main(int argc, char *argv[])
 {
-    dataslinger::DataSlinger slinger;
-    slinger.signal_beforeSend.connect([]() {
-        std::cout << "Will send data" << std::endl;
-    });
-
     QApplication a(argc, argv);
-    dataslinger::ui::MainWindow w;
-    w.show();
+
+    dataslinger::app::App app;
+    dataslinger::ui::MainWindow ui;
+
+    // Connect the user interface to the demo app backend/implementation
+    ui.connectToApplication(app.getAppSignals());
+
+    ui.show();
 
     return a.exec();
 }

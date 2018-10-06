@@ -1,3 +1,6 @@
+# C++17 support (MSVC2017)
+QMAKE_CXXFLAGS += /std:c++17
+
 QT += core gui widgets
 
 TARGET = dataslinger
@@ -12,7 +15,7 @@ DEPENDPATH += C:/Development/boost_1_68_0/
 # Include libs
 LIBS += "-LC:/Development/boost_1_68_0/stage/x64/lib/"
 
-include($$PWD/lib/dataslinger/dataslinger/dataslinger.pri)
+include($$PWD/lib/dataslinger-lib/dataslinger.pri)
 
 # Include sources
 include($$PWD/src/sources.pri)
