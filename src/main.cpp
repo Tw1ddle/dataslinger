@@ -16,7 +16,5 @@ int main(int argc, char *argv[])
     // Show the UI
     ui.show();
 
-    // TODO automatic search/connect using appropriate technique
-
     return a.exec();
 }

@@ -2,16 +2,83 @@
 
 #include "ui_mainwindow.h"
 
+#include <cassert>
+#include <cstdint>
 #include <memory>
+#include <string>
 #include <vector>
 
+#include <boost/algorithm/string.hpp>
+#include <boost/optional.hpp>
 #include <boost/scope_exit.hpp>
 
+#include <QMessageBox>
 #include <QPlainTextEdit>
+#include <QString>
+#include <QTimer>
 
-#include "dataslinger/dataslingererrors.h"
+#include "dataslinger/connection/connectioninfo.h"
+#include "dataslinger/event/event.h"
+#include "dataslinger/message/message.h"
 
 #include "app/appsignals.h"
+
+namespace
+{
+
+boost::optional<dataslinger::connection::ConnectionInfo> makeReceiverConnectionInfoFromUserInput(const std::string& input)
+{
+    std::vector<std::string> parts;
+    boost::algorithm::split(parts, input, boost::is_any_of(":"));
+
+    const std::string host = parts.size() >= 1 ? parts[0] : "";
+    const std::string portStr = parts.size() >= 2 ? parts[1] : "";
+
+    if(host.empty() || portStr.empty()) {
+        return boost::none;
+    }
+
+    std::uint16_t port = 0;
+    try {
+        port = std::clamp(std::stoi(portStr), 0, static_cast<std::int32_t>(std::numeric_limits<std::uint16_t>::max()));
+    } catch(...) {
+        assert(0 && "Failed to convert port string to integer");
+        return boost::none;
+    }
+
+    return boost::make_optional<dataslinger::connection::ConnectionInfo>({{{
+        { dataslinger::connection::ConnectionInfoDataKeys::WEBSOCKET_RECEIVER_HOST_STRING, host },
+        { dataslinger::connection::ConnectionInfoDataKeys::WEBSOCKET_RECEIVER_PORT_UINT16, port }
+    }}});
+}
+
+boost::optional<dataslinger::connection::ConnectionInfo> makeSlingerConnectionInfoFromUserInput(const std::string& input)
+{
+    std::vector<std::string> parts;
+    boost::algorithm::split(parts, input, boost::is_any_of(":"));
+
+    const std::string host = parts.size() >= 1 ? parts[0] : "";
+    const std::string portStr = parts.size() >= 2 ? parts[1] : "";
+
+    if(host.empty() || portStr.empty()) {
+        return boost::none;
+    }
+
+    std::uint16_t port = 0;
+    try {
+        port = std::clamp(std::stoi(portStr), 0, static_cast<std::int32_t>(std::numeric_limits<std::uint16_t>::max()));
+    } catch(...) {
+        assert(0 && "Failed to convert port string to integer");
+        return boost::none;
+    }
+
+    return boost::make_optional<dataslinger::connection::ConnectionInfo>({{{
+        { dataslinger::connection::ConnectionInfoDataKeys::WEBSOCKET_SLINGER_HOST_STRING, host },
+        { dataslinger::connection::ConnectionInfoDataKeys::WEBSOCKET_SLINGER_PORT_UINT16, port }
+    }}});
+}
+
+}
 
 namespace dataslinger
 {
@@ -24,6 +91,10 @@ public:
     MainWindowImpl(MainWindow* pQ) : q{pQ}, ui(std::make_unique<Ui::MainWindow>())
     {
         ui->setupUi(q);
+
+        connect(ui->eventLog, &QPlainTextEdit::textChanged, [this]() {
+            ui->eventLog->ensureCursorVisible();
+        });
 
         q->signal_beforeConnectToApplication.connect([this](dataslinger::app::AppSignals&) {
             m_appConnections.clear();
@@ -43,34 +114,72 @@ public:
         q->signal_beforeConnectToApplication(s);
 
         m_appConnections.emplace_back(s.signal_onDataSlung.connect([this]() {
-            ui->slingingLog->insertPlainText("Test");
+            ui->slingingLog->appendPlainText("Sent message");
         }));
 
-        m_appConnections.emplace_back(s.signal_onDataReceived.connect([this]() {
-            ui->receivingLog->insertPlainText("Test");
+        m_appConnections.emplace_back(s.signal_onDataReceived.connect([this](const dataslinger::message::Message& message) {
+            ui->receivingLog->appendPlainText("Received message");
         }));
 
-        m_appConnections.emplace_back(s.signal_onError.connect([this](const dataslinger::error::DataSlingerError& e) {
-            ui->errorLog->insertPlainText(e.what().c_str());
-            ui->errorLog->insertPlainText("\n");
+        m_appConnections.emplace_back(s.signal_onEvent.connect([this](const dataslinger::event::Event& e) {
+            ui->eventLog->appendPlainText(e.what().c_str());
+            ui->eventLog->appendPlainText("\n");
         }));
+
+        m_receiverPollingTimer.start(150);
+        m_slingerPollingTimer.start(150);
+
+        connect(&m_receiverPollingTimer, &QTimer::timeout, [&s]() {
+            s.signal_onPollReceiversRequest();
+        });
+
+        connect(&m_slingerPollingTimer, &QTimer::timeout, [&s]() {
+            s.signal_onPollSlingersRequest();
+        });
 
         connect(ui->slingerLaunchButton, &QPushButton::clicked, [this, &s]() {
-            ui->slingerConnectionLog->insertPlainText("Clicked slinger launch button...\n");
+            ui->slingerConnectionLog->appendPlainText("Clicked slinger launch button...\n");
 
-            s.signal_onSlingerSetupRequest();
+            const auto connectionInfo = makeSlingerConnectionInfoFromUserInput(ui->slingerAddressEdit->text().toStdString());
+
+            if(connectionInfo == boost::none) {
+                QMessageBox::critical(q, "Validation Error", "Failed to validate data slinger connection info.");
+                return;
+            }
+
+            s.signal_onSlingerSetupRequest(*connectionInfo);
         });
 
         connect(ui->clientConnectButton, &QPushButton::clicked, [this, &s]() {
-            ui->clientLog->insertPlainText("Clicked client connect button...\n");
+            ui->clientLog->appendPlainText("Clicked client connect button...\n");
 
-            s.signal_onReceiverSetupRequest();
+            const auto connectionInfo = makeReceiverConnectionInfoFromUserInput(ui->clientConnectionEdit->text().toStdString());
+
+            if(connectionInfo == boost::none) {
+                QMessageBox::critical(q, "Validation Error", "Failed to validate data receiver connection info.");
+                return;
+            }
+
+            s.signal_onReceiverSetupRequest(*connectionInfo);
+        });
+
+        connect(ui->clearSlingersButton, &QPushButton::clicked, [this, &s]() {
+            ui->eventLog->appendPlainText("Will clear out slingers...\n");
+            s.signal_onClearSlingersRequest();
+        });
+
+        connect(ui->clearReceiversButton, &QPushButton::clicked, [this, &s]() {
+            ui->eventLog->appendPlainText("Will clear out receivers...\n");
+            s.signal_onClearReceiversRequest();
         });
     }
 
 private:
     MainWindow* q;
     std::unique_ptr<Ui::MainWindow> ui;
+
+    QTimer m_receiverPollingTimer;
+    QTimer m_slingerPollingTimer;
 
     std::vector<boost::signals2::scoped_connection> m_appConnections; ///< Boost signals2 connections between the UI and the backend application
 };

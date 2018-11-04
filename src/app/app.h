@@ -30,20 +30,6 @@ public:
     /// Returns a reference to the signals emitted by the application
     AppSignals& getAppSignals();
 
-    /// Signal emitted before the application stops slinging data
-    boost::signals2::signal<void()> signal_beforeStopSlinging;
-    /// Signal emitted after the application stops slinging data
-    boost::signals2::signal<void()> signal_afterStopSlinging;
-    /// Makes the application stop slinging data
-    void stopSlinging();
-
-    /// Signal emitted before the application stops listening for/receiving data
-    boost::signals2::signal<void()> signal_beforeStopListening;
-    /// Signal emitted after the application stops listening for/receiving data
-    boost::signals2::signal<void()> signal_afterStopListening;
-    /// Makes the application stop listening for/receiving data
-    void stopListening();
-
 private:
     class AppImpl;
     std::unique_ptr<AppImpl> d;
