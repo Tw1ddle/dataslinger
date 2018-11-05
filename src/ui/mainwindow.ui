@@ -251,7 +251,7 @@
        <bool>true</bool>
       </property>
       <property name="placeholderText">
-       <string>Error/Events Log...</string>
+       <string>Event Log...</string>
       </property>
      </widget>
     </item>

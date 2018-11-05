@@ -5,11 +5,11 @@
 #include <cassert>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/optional.hpp>
 #include <boost/scope_exit.hpp>
 
 #include <QMessageBox>
@@ -20,13 +20,14 @@
 #include "dataslinger/connection/connectioninfo.h"
 #include "dataslinger/event/event.h"
 #include "dataslinger/message/message.h"
+#include "dataslinger/util/heterogeneousmap.h"
 
 #include "app/appsignals.h"
 
 namespace
 {
 
-boost::optional<dataslinger::connection::ConnectionInfo> makeReceiverConnectionInfoFromUserInput(const std::string& input)
+std::optional<dataslinger::connection::ConnectionInfo> makeReceiverConnectionInfoFromUserInput(const std::string& input)
 {
     std::vector<std::string> parts;
     boost::algorithm::split(parts, input, boost::is_any_of(":"));
@@ -35,7 +36,7 @@ boost::optional<dataslinger::connection::ConnectionInfo> makeReceiverConnectionI
     const std::string portStr = parts.size() >= 2 ? parts[1] : "";
 
     if(host.empty() || portStr.empty()) {
-        return boost::none;
+        return std::nullopt;
     }
 
     std::uint16_t port = 0;
@@ -43,16 +44,16 @@ boost::optional<dataslinger::connection::ConnectionInfo> makeReceiverConnectionI
         port = std::clamp(std::stoi(portStr), 0, static_cast<std::int32_t>(std::numeric_limits<std::uint16_t>::max()));
     } catch(...) {
         assert(0 && "Failed to convert port string to integer");
-        return boost::none;
+        return std::nullopt;
     }
 
-    return boost::make_optional<dataslinger::connection::ConnectionInfo>({{{
+    return std::make_optional<dataslinger::connection::ConnectionInfo>({{{
         { dataslinger::connection::ConnectionInfoDataKeys::WEBSOCKET_RECEIVER_HOST_STRING, host },
         { dataslinger::connection::ConnectionInfoDataKeys::WEBSOCKET_RECEIVER_PORT_UINT16, port }
     }}});
 }
 
-boost::optional<dataslinger::connection::ConnectionInfo> makeSlingerConnectionInfoFromUserInput(const std::string& input)
+std::optional<dataslinger::connection::ConnectionInfo> makeSlingerConnectionInfoFromUserInput(const std::string& input)
 {
     std::vector<std::string> parts;
     boost::algorithm::split(parts, input, boost::is_any_of(":"));
@@ -61,7 +62,7 @@ boost::optional<dataslinger::connection::ConnectionInfo> makeSlingerConnectionIn
     const std::string portStr = parts.size() >= 2 ? parts[1] : "";
 
     if(host.empty() || portStr.empty()) {
-        return boost::none;
+        return std::nullopt;
     }
 
     std::uint16_t port = 0;
@@ -69,10 +70,10 @@ boost::optional<dataslinger::connection::ConnectionInfo> makeSlingerConnectionIn
         port = std::clamp(std::stoi(portStr), 0, static_cast<std::int32_t>(std::numeric_limits<std::uint16_t>::max()));
     } catch(...) {
         assert(0 && "Failed to convert port string to integer");
-        return boost::none;
+        return std::nullopt;
     }
 
-    return boost::make_optional<dataslinger::connection::ConnectionInfo>({{{
+    return std::make_optional<dataslinger::connection::ConnectionInfo>({{{
         { dataslinger::connection::ConnectionInfoDataKeys::WEBSOCKET_SLINGER_HOST_STRING, host },
         { dataslinger::connection::ConnectionInfoDataKeys::WEBSOCKET_SLINGER_PORT_UINT16, port }
     }}});
@@ -122,8 +123,23 @@ public:
         }));
 
         m_appConnections.emplace_back(s.signal_onEvent.connect([this](const dataslinger::event::Event& e) {
-            ui->eventLog->appendPlainText(e.what().c_str());
-            ui->eventLog->appendPlainText("\n");
+            const dataslinger::event::EventSourceKind source = e.getInfo().getValue<dataslinger::event::EventSourceKind>(dataslinger::event::EventDataKeys::EVENT_SOURCE_KIND);
+
+            switch(source) {
+                case dataslinger::event::EventSourceKind::RECEIVER:
+                    ui->receivingLog->appendPlainText(e.what().c_str());
+                    ui->receivingLog->appendPlainText("\n");
+                    break;
+                case dataslinger::event::EventSourceKind::SLINGER:
+                    ui->slingingLog->appendPlainText(e.what().c_str());
+                    ui->slingingLog->appendPlainText("\n");
+                    break;
+                default:
+                    assert(0 && "Received event from unknown source");
+                    ui->eventLog->appendPlainText(e.what().c_str());
+                    ui->eventLog->appendPlainText("\n");
+                    break;
+            }
         }));
 
         m_receiverPollingTimer.start(150);
@@ -142,7 +158,7 @@ public:
 
             const auto connectionInfo = makeSlingerConnectionInfoFromUserInput(ui->slingerAddressEdit->text().toStdString());
 
-            if(connectionInfo == boost::none) {
+            if(connectionInfo == std::nullopt) {
                 QMessageBox::critical(q, "Validation Error", "Failed to validate data slinger connection info.");
                 return;
             }
@@ -155,7 +171,7 @@ public:
 
             const auto connectionInfo = makeReceiverConnectionInfoFromUserInput(ui->clientConnectionEdit->text().toStdString());
 
-            if(connectionInfo == boost::none) {
+            if(connectionInfo == std::nullopt) {
                 QMessageBox::critical(q, "Validation Error", "Failed to validate data receiver connection info.");
                 return;
             }
@@ -164,12 +180,12 @@ public:
         });
 
         connect(ui->clearSlingersButton, &QPushButton::clicked, [this, &s]() {
-            ui->eventLog->appendPlainText("Will clear out slingers...\n");
+            ui->slingerConnectionLog->appendPlainText("Clicked clear slingers button...\n");
             s.signal_onClearSlingersRequest();
         });
 
         connect(ui->clearReceiversButton, &QPushButton::clicked, [this, &s]() {
-            ui->eventLog->appendPlainText("Will clear out receivers...\n");
+            ui->clientLog->appendPlainText("Clicked clear receivers button...\n");
             s.signal_onClearReceiversRequest();
         });
     }
