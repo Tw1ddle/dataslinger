@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
+    // TODO divide into multiple applications/windows, with the slinger and receiver(s)?
     dataslinger::app::App app;
     dataslinger::ui::MainWindow ui;
 

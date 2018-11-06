@@ -23,25 +23,33 @@ class App::AppImpl
 public:
     AppImpl(App* pQ) : q{pQ}
     {
-        getAppSignals().signal_onReceiverSetupRequest.connect([this](const dataslinger::connection::ConnectionInfo& info) {
+        m_signals.signal_onReceiverSetupRequest.connect([this](const dataslinger::connection::ConnectionInfo& info) {
             addReceiver(info);
         });
-        getAppSignals().signal_onSlingerSetupRequest.connect([this](const dataslinger::connection::ConnectionInfo& info) {
+        m_signals.signal_onSlingerSetupRequest.connect([this](const dataslinger::connection::ConnectionInfo& info) {
             addSlinger(info);
         });
 
-        getAppSignals().signal_onPollReceiversRequest.connect([this]() {
+        m_signals.signal_onPollReceiversRequest.connect([this]() {
             pollReceivers();
         });
-        getAppSignals().signal_onPollSlingersRequest.connect([this]() {
+        m_signals.signal_onPollSlingersRequest.connect([this]() {
             pollSlingers();
         });
 
-        getAppSignals().signal_onClearReceiversRequest.connect([this]() {
+        m_signals.signal_onClearReceiversRequest.connect([this]() {
             clearReceivers();
         });
-        getAppSignals().signal_onClearSlingersRequest.connect([this]() {
+        m_signals.signal_onClearSlingersRequest.connect([this]() {
             clearSlingers();
+        });
+
+        m_signals.signal_onCommand.connect([this](const std::string& command) {
+            if(command == "sendMessage") {
+                for(auto& slinger : m_slingers) {
+                    slinger.send(dataslinger::message::Message{dataslinger::message::ids::namedInstruction});
+                }
+            }
         });
     }
 
@@ -66,7 +74,7 @@ private:
         const auto onEvent = [this](const dataslinger::event::Event& event) {
             m_signals.signal_onEvent(event);
         };
-        m_slingers.emplace_back(std::move(dataslinger::DataSlinger(onReceive, onEvent, info)));
+        m_slingers.emplace_back(dataslinger::DataSlinger(onReceive, onEvent, info));
     }
 
     void addReceiver(const dataslinger::connection::ConnectionInfo& info)
@@ -77,7 +85,7 @@ private:
         const auto onEvent = [this](const dataslinger::event::Event& event) {
             m_signals.signal_onEvent(event);
         };
-        m_receivers.emplace_back(std::move(dataslinger::DataReceiver(onReceive, onEvent, info)));
+        m_receivers.emplace_back(dataslinger::DataReceiver(onReceive, onEvent, info));
     }
 
     void clearSlingers()

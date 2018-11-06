@@ -119,7 +119,7 @@ public:
         }));
 
         m_appConnections.emplace_back(s.signal_onDataReceived.connect([this](const dataslinger::message::Message& message) {
-            ui->receivingLog->appendPlainText("Received message");
+            ui->receivingLog->appendPlainText(QString("Received message with id: ").append(QString::number(static_cast<std::uint32_t>(message.id))));
         }));
 
         m_appConnections.emplace_back(s.signal_onEvent.connect([this](const dataslinger::event::Event& e) {
@@ -187,6 +187,10 @@ public:
         connect(ui->clearReceiversButton, &QPushButton::clicked, [this, &s]() {
             ui->clientLog->appendPlainText("Clicked clear receivers button...\n");
             s.signal_onClearReceiversRequest();
+        });
+
+        connect(ui->commandLineEdit, &dataslinger::ui::CommandLineEdit::signal_commandSubmitted, [&s](const std::string& command) {
+            s.signal_onCommand(command);
         });
     }
 

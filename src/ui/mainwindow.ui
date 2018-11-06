@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>1024</height>
+    <height>800</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -255,6 +255,9 @@
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="dataslinger::ui::CommandLineEdit" name="commandLineEdit" native="true"/>
+    </item>
    </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
@@ -268,6 +271,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>dataslinger::ui::CommandLineEdit</class>
+   <extends>QWidget</extends>
+   <header>ui/commandlineedit.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -38,6 +38,8 @@ public:
 
     boost::signals2::signal<void()> signal_beforeClearReceivers;
     boost::signals2::signal<void()> signal_afterClearReceivers;
+
+    boost::signals2::signal<void(const std::string&)> signal_onCommand;
 };
 
 }
