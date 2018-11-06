@@ -47,7 +47,8 @@ public:
         m_signals.signal_onCommand.connect([this](const std::string& command) {
             if(command == "sendMessage") {
                 for(auto& slinger : m_slingers) {
-                    slinger.send(dataslinger::message::Message{dataslinger::message::ids::namedInstruction});
+                    std::vector<std::byte> data(20);
+                    slinger.send(data);
                 }
             }
         });

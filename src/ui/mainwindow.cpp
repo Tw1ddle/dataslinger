@@ -119,7 +119,7 @@ public:
         }));
 
         m_appConnections.emplace_back(s.signal_onDataReceived.connect([this](const dataslinger::message::Message& message) {
-            ui->receivingLog->appendPlainText(QString("Received message with id: ").append(QString::number(static_cast<std::uint32_t>(message.id))));
+            ui->receivingLog->appendPlainText(QString("Received message with size: ").append(QString::number(message.size())));
         }));
 
         m_appConnections.emplace_back(s.signal_onEvent.connect([this](const dataslinger::event::Event& e) {
