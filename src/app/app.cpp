@@ -45,15 +45,29 @@ public:
         });
 
         m_signals.signal_onCommand.connect([this](const std::string& command) {
+            std::vector<std::byte> data(4000000);
+
             if(command == "sendMessageToReceivers") {
                 for(auto& slinger : m_slingers) {
-                    std::vector<std::byte> data(4000000);
                     slinger.send(data);
                 }
             } else if(command =="sendMessageToSlingers") {
                 for(auto& receiver : m_receivers) {
-                    std::vector<std::byte> data(4000000);
                     receiver.send(data);
+                }
+            }
+
+            if(command == "sendMessagesToReceivers") {
+                for(auto& slinger : m_slingers) {
+                    for(int i = 0; i < 20; i++) {
+                        slinger.send(data);
+                    }
+                }
+            } else if(command =="sendMessagesToSlingers") {
+                for(auto& receiver : m_receivers) {
+                    for(int i = 0; i < 20; i++) {
+                        receiver.send(data);
+                    }
                 }
             }
         });
