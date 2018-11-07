@@ -45,10 +45,15 @@ public:
         });
 
         m_signals.signal_onCommand.connect([this](const std::string& command) {
-            if(command == "sendMessage") {
+            if(command == "sendMessageToReceivers") {
                 for(auto& slinger : m_slingers) {
-                    std::vector<std::byte> data(20);
+                    std::vector<std::byte> data(4000000);
                     slinger.send(data);
+                }
+            } else if(command =="sendMessageToSlingers") {
+                for(auto& receiver : m_receivers) {
+                    std::vector<std::byte> data(4000000);
+                    receiver.send(data);
                 }
             }
         });
@@ -70,7 +75,7 @@ private:
     void addSlinger(const dataslinger::connection::ConnectionInfo& info)
     {
         const auto onReceive = [this](const dataslinger::message::Message& message) {
-            m_signals.signal_onDataReceived(message);
+            m_signals.signal_onSlingerReceivedData(message);
         };
         const auto onEvent = [this](const dataslinger::event::Event& event) {
             m_signals.signal_onEvent(event);
@@ -81,7 +86,7 @@ private:
     void addReceiver(const dataslinger::connection::ConnectionInfo& info)
     {
         const auto onReceive = [this](const dataslinger::message::Message& message) {
-            m_signals.signal_onDataReceived(message);
+            m_signals.signal_onReceiverReceivedData(message);
         };
         const auto onEvent = [this](const dataslinger::event::Event& event) {
             m_signals.signal_onEvent(event);

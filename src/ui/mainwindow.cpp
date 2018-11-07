@@ -114,11 +114,17 @@ public:
 
         q->signal_beforeConnectToApplication(s);
 
-        m_appConnections.emplace_back(s.signal_onDataSlung.connect([this]() {
-            ui->slingingLog->appendPlainText("Sent message");
+        m_appConnections.emplace_back(s.signal_onSlingerSentData.connect([this]() {
+            ui->slingingLog->appendPlainText("Slinger sent message");
+        }));
+        m_appConnections.emplace_back(s.signal_onReceiverSentData.connect([this]() {
+            ui->slingingLog->appendPlainText("Receiver sent message");
         }));
 
-        m_appConnections.emplace_back(s.signal_onDataReceived.connect([this](const dataslinger::message::Message& message) {
+        m_appConnections.emplace_back(s.signal_onSlingerReceivedData.connect([this](const dataslinger::message::Message& message) {
+            ui->slingingLog->appendPlainText(QString("Received message with size: ").append(QString::number(message.size())));
+        }));
+        m_appConnections.emplace_back(s.signal_onReceiverReceivedData.connect([this](const dataslinger::message::Message& message) {
             ui->receivingLog->appendPlainText(QString("Received message with size: ").append(QString::number(message.size())));
         }));
 

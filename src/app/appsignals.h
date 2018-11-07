@@ -25,8 +25,11 @@ public:
     boost::signals2::signal<void()> signal_onPollReceiversRequest;
     boost::signals2::signal<void()> signal_onPollSlingersRequest;
 
-    boost::signals2::signal<void(const dataslinger::message::Message&)> signal_onDataReceived;
-    boost::signals2::signal<void()> signal_onDataSlung;
+    boost::signals2::signal<void(const dataslinger::message::Message&)> signal_onSlingerReceivedData;
+    boost::signals2::signal<void(const dataslinger::message::Message&)> signal_onReceiverReceivedData;
+
+    boost::signals2::signal<void()> signal_onSlingerSentData;
+    boost::signals2::signal<void()> signal_onReceiverSentData;
 
     boost::signals2::signal<void(dataslinger::event::Event)> signal_onEvent;
 
