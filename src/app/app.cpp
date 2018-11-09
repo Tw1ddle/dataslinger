@@ -5,8 +5,7 @@
 
 #include <boost/scope_exit.hpp>
 
-#include "dataslinger/dataslinger.h"
-#include "dataslinger/datareceiver.h"
+#include "dataslinger/slinger.h"
 #include "dataslinger/connection/connectioninfo.h"
 #include "dataslinger/message/message.h"
 #include "dataslinger/event/event.h"
@@ -94,7 +93,7 @@ private:
         const auto onEvent = [this](const dataslinger::event::Event& event) {
             m_signals.signal_onEvent(event);
         };
-        m_slingers.emplace_back(dataslinger::DataSlinger(onReceive, onEvent, info));
+        m_slingers.emplace_back(dataslinger::makeDataSlinger(onReceive, onEvent, info));
     }
 
     void addReceiver(const dataslinger::connection::ConnectionInfo& info)
@@ -105,7 +104,7 @@ private:
         const auto onEvent = [this](const dataslinger::event::Event& event) {
             m_signals.signal_onEvent(event);
         };
-        m_receivers.emplace_back(dataslinger::DataReceiver(onReceive, onEvent, info));
+        m_receivers.emplace_back(dataslinger::makeDataSlinger(onReceive, onEvent, info));
     }
 
     void clearSlingers()
@@ -148,7 +147,7 @@ private:
     dataslinger::app::AppSignals m_signals;
 
     std::vector<dataslinger::DataSlinger> m_slingers;
-    std::vector<dataslinger::DataReceiver> m_receivers;
+    std::vector<dataslinger::DataSlinger> m_receivers;
 };
 
 App::App() : d{std::make_unique<App::AppImpl>(this)}
