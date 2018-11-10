@@ -8,7 +8,7 @@ namespace dataslinger
 {
 namespace app
 {
-class AppSignals;
+class LauncherAppSignals;
 }
 }
 
@@ -19,20 +19,20 @@ namespace app
 
 /// The main application class
 /// Implements the backend functionality for this demo
-class App
+class LauncherApp
 {
 public:
-    App();
-    ~App();
-    App(const App&) = delete;
-    App& operator=(const App&) = delete;
+    LauncherApp();
+    ~LauncherApp();
+    LauncherApp(const LauncherApp&) = delete;
+    LauncherApp& operator=(const LauncherApp&) = delete;
 
     /// Returns a reference to the signals emitted by the application
-    AppSignals& getAppSignals();
+    LauncherAppSignals& getSignals();
 
 private:
-    class AppImpl;
-    std::unique_ptr<AppImpl> d;
+    class LauncherAppImpl;
+    std::unique_ptr<LauncherAppImpl> d;
 };
 
 }

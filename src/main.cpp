@@ -3,16 +3,18 @@
 #include "app/app.h"
 #include "ui/mainwindow.h"
 
+#include "app/launcherapp.h"
+#include "ui/launcherwindow.h"
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    // TODO divide into multiple applications/windows, with the slinger and receiver(s)?
-    dataslinger::app::App app;
-    dataslinger::ui::MainWindow ui;
+    dataslinger::app::LauncherApp app;
+    dataslinger::ui::LauncherWindow ui;
 
-    // Connect the user interface to the demo app backend/implementation
-    ui.connectToApplication(app.getAppSignals());
+    // Connect the user interface to the demo launcher implementation
+    ui.connectToApplication(app.getSignals());
 
     // Show the UI
     ui.show();
