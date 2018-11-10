@@ -22,8 +22,9 @@ public:
     SlingerAppSignals& operator=(const SlingerAppSignals&) = delete;
 
     boost::signals2::signal<void(dataslinger::connection::ConnectionOptions)> signal_onSlingerSetupRequest;
+
     boost::signals2::signal<void()> signal_onPollSlingersRequest;
-    boost::signals2::signal<void()> signal_onSlingerSentData;
+    boost::signals2::signal<void(const dataslinger::message::Message&)> signal_onSlingerSentData;
     boost::signals2::signal<void(const dataslinger::message::Message&)> signal_onSlingerReceivedData;
     boost::signals2::signal<void(dataslinger::event::Event)> signal_onEvent;
     boost::signals2::signal<void()> signal_onClearSlingersRequest;

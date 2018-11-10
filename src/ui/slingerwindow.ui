@@ -32,12 +32,24 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout">
         <item>
-         <widget class="QPlainTextEdit" name="slingerConnectionLog">
+         <widget class="QPlainTextEdit" name="slingerUiLog">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>200</height>
+           </size>
+          </property>
           <property name="readOnly">
            <bool>true</bool>
           </property>
           <property name="placeholderText">
-           <string>Slinger Connection Log...</string>
+           <string>User Interface Log</string>
           </property>
          </widget>
         </item>

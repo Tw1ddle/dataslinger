@@ -4,6 +4,8 @@
 
 #include <boost/signals2/signal.hpp>
 
+#include "dataslinger/connection/connectionoptions.h"
+
 namespace dataslinger
 {
 namespace app
@@ -29,6 +31,9 @@ public:
 
     /// Returns a reference to the signals emitted by the slinger app
     SlingerAppSignals& getSignals();
+
+    /// Adds and starts a slinger given the given options
+    void addSlinger(const dataslinger::connection::ConnectionOptions& options);
 
 private:
     class SlingerAppImpl;

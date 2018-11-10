@@ -37,16 +37,19 @@ public:
         m_signals.signal_onCommand.connect([this](const std::string& command) {
             std::vector<std::byte> data(4000000);
 
-            if(command == "sendMessageToReceivers") {
-                for(auto& slinger : m_slingers) {
-                    slinger.send(data);
+            if(command == "sendMessage") {
+                send(data);
+            }
+            if(command == "sendMessages") {
+                for(int i = 0; i < 25; i++) {
+                    send(data);
                 }
             }
-            if(command == "sendMessagesToReceivers") {
-                for(auto& slinger : m_slingers) {
-                    for(int i = 0; i < 20; i++) {
-                        slinger.send(data);
-                    }
+            if(command == "sendRandomMessages") {
+                std::vector<std::byte> data(4000000);
+
+                for(int i = 0; i < 25; i++) {
+                    send(data);
                 }
             }
         });
@@ -64,7 +67,6 @@ public:
         return m_signals;
     }
 
-private:
     void addSlinger(const dataslinger::connection::ConnectionOptions& info)
     {
         const auto onReceive = [this](const dataslinger::message::Message& message) {
@@ -76,6 +78,7 @@ private:
         m_slingers.emplace_back(dataslinger::makeDataSlinger(onReceive, onEvent, info));
     }
 
+private:
     void clearSlingers()
     {
         m_slingers.clear();
@@ -86,6 +89,14 @@ private:
         for(auto& slinger : m_slingers) {
             slinger.poll();
         }
+    }
+
+    void send(const dataslinger::message::Message& data)
+    {
+        for(auto& slinger : m_slingers) {
+            slinger.send(data);
+        }
+        m_signals.signal_onSlingerSentData(data);
     }
 
     dataslinger::app::SlingerApp* q;
@@ -105,6 +116,11 @@ SlingerApp::~SlingerApp()
 SlingerAppSignals& SlingerApp::getSignals()
 {
     return d->getSignals();
+}
+
+void SlingerApp::addSlinger(const dataslinger::connection::ConnectionOptions& options)
+{
+    return d->addSlinger(options);
 }
 
 }

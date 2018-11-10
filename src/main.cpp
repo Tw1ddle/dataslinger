@@ -1,8 +1,5 @@
 #include <QApplication>
 
-#include "app/app.h"
-#include "ui/mainwindow.h"
-
 #include "app/launcherapp.h"
 #include "ui/launcherwindow.h"
 

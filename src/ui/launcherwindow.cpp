@@ -30,10 +30,6 @@ public:
 
     void connectToApplication(dataslinger::app::LauncherAppSignals& s)
     {
-        //m_appConnections.emplace_back(s.signal_onReceiverReceivedData.connect([this](const dataslinger::message::Message& message) {
-        //    ui->receivingLog->appendPlainText(QString("Received message with size: ").append(QString::number(message.size())));
-        //}));
-
         auto grid = ui->verticalLayout_3->findChild<QGridLayout*>();
 
         auto makeButton = [this](const QString& label, const std::function<void()>& onClick) {
@@ -48,10 +44,51 @@ public:
             s.signal_onOpenSlingerRequest();
         }));
         grid->addWidget(makeButton("Open WebSocket Server (127.0.0.1:8081)", [&s]() {
-            s.signal_onOpenSlingerWithOptionsRequest({{{}}}); // TODO options
+            s.signal_onOpenSlingerWithOptionsRequest(
+            {{{
+                 { dataslinger::connection::ConnectionOption::PREFERRED_BACKEND, dataslinger::connection::PreferredBackend::WEBSOCKET_SERVER },
+                 { dataslinger::connection::ConnectionOption::WEBSOCKET_HOST_STRING, std::string("127.0.0.1") },
+                 { dataslinger::connection::ConnectionOption::WEBSOCKET_PORT_UINT16, static_cast<std::uint16_t>(8001) }
+            }}});
         }));
         grid->addWidget(makeButton("Open WebSocket Client (127.0.0.1:8081)", [&s]() {
-            s.signal_onOpenSlingerWithOptionsRequest({{{}}}); // TODO options
+            s.signal_onOpenSlingerWithOptionsRequest(
+            {{{
+                 { dataslinger::connection::ConnectionOption::PREFERRED_BACKEND, dataslinger::connection::PreferredBackend::WEBSOCKET_CLIENT },
+                 { dataslinger::connection::ConnectionOption::WEBSOCKET_HOST_STRING, std::string("127.0.0.1") },
+                 { dataslinger::connection::ConnectionOption::WEBSOCKET_PORT_UINT16, static_cast<std::uint16_t>(8001) }
+            }}});
+        }));
+        grid->addWidget(makeButton("Open WebSocket Server/Client Pair (127.0.0.1:8081)", [&s]() {
+            s.signal_onOpenSlingerPairWithOptionsRequest(
+            {{{
+                 { dataslinger::connection::ConnectionOption::PREFERRED_BACKEND, dataslinger::connection::PreferredBackend::WEBSOCKET_SERVER },
+                 { dataslinger::connection::ConnectionOption::WEBSOCKET_HOST_STRING, std::string("127.0.0.1") },
+                 { dataslinger::connection::ConnectionOption::WEBSOCKET_PORT_UINT16, static_cast<std::uint16_t>(8001) }
+            }}},
+            {{{
+                 { dataslinger::connection::ConnectionOption::PREFERRED_BACKEND, dataslinger::connection::PreferredBackend::WEBSOCKET_CLIENT },
+                 { dataslinger::connection::ConnectionOption::WEBSOCKET_HOST_STRING, std::string("127.0.0.1") },
+                 { dataslinger::connection::ConnectionOption::WEBSOCKET_PORT_UINT16, static_cast<std::uint16_t>(8001) }
+            }}});
+        }));
+        grid->addWidget(makeButton("Open Shared Memory Writer/Reader Pair", [&s]() {
+            s.signal_onOpenSlingerPairWithOptionsRequest(
+            {{{
+                 { dataslinger::connection::ConnectionOption::PREFERRED_BACKEND, dataslinger::connection::PreferredBackend::SHARED_VECTOR }
+            }}},
+            {{{
+                 { dataslinger::connection::ConnectionOption::PREFERRED_BACKEND, dataslinger::connection::PreferredBackend::SHARED_VECTOR }
+            }}});
+        }));
+        grid->addWidget(makeButton("Open Pipe Writer/Reader Pair", [&s]() {
+            s.signal_onOpenSlingerPairWithOptionsRequest(
+            {{{
+                 { dataslinger::connection::ConnectionOption::PREFERRED_BACKEND, dataslinger::connection::PreferredBackend::PIPE }
+            }}},
+            {{{
+                 { dataslinger::connection::ConnectionOption::PREFERRED_BACKEND, dataslinger::connection::PreferredBackend::PIPE }
+            }}});
         }));
     }
 

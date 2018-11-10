@@ -1,13 +1,34 @@
 #include "app/launcherapp.h"
 
 #include <memory>
+#include <optional>
 #include <vector>
 
 #include "dataslinger/connection/connectionoptions.h"
 
 #include "app/launcherappsignals.h"
 #include "app/slingerapp.h"
+#include "app/slingerappsignals.h"
 #include "ui/slingerwindow.h"
+
+namespace
+{
+
+void openSlinger(std::optional<const dataslinger::connection::ConnectionOptions> options)
+{
+    // TODO memory leaks
+    dataslinger::ui::SlingerWindow* window = new dataslinger::ui::SlingerWindow();
+    dataslinger::app::SlingerApp* app = new dataslinger::app::SlingerApp();
+
+    window->connectToApplication(app->getSignals());
+    window->show();
+
+    if(options != std::nullopt) {
+        app->addSlinger(*options);
+    }
+}
+
+}
 
 namespace dataslinger
 {
@@ -20,22 +41,17 @@ public:
     LauncherAppImpl(LauncherApp* pQ) : q{pQ}
     {
         m_signals.signal_onOpenSlingerRequest.connect([]{
-            // TODO memory leaks
-            dataslinger::ui::SlingerWindow* window = new dataslinger::ui::SlingerWindow();
-            dataslinger::app::SlingerApp* app = new dataslinger::app::SlingerApp();
-
-            window->connectToApplication(app->getSignals());
-            window->show();
+            openSlinger(std::nullopt);
         });
 
         m_signals.signal_onOpenSlingerWithOptionsRequest.connect([](const dataslinger::connection::ConnectionOptions& options){
-            // TODO memory leaks
-            // TODO pass in options
-            dataslinger::ui::SlingerWindow* window = new dataslinger::ui::SlingerWindow();
-            dataslinger::app::SlingerApp* app = new dataslinger::app::SlingerApp();
+            openSlinger(options);
+        });
 
-            window->connectToApplication(app->getSignals());
-            window->show();
+        m_signals.signal_onOpenSlingerPairWithOptionsRequest.connect([](const dataslinger::connection::ConnectionOptions& firstOptions,
+                                                                     const dataslinger::connection::ConnectionOptions& secondOptions) {
+            openSlinger(firstOptions);
+            openSlinger(secondOptions);
         });
     }
 

@@ -96,19 +96,30 @@ public:
 
         q->signal_beforeConnectToApplication(s);
 
-        m_appConnections.emplace_back(s.signal_onSlingerSentData.connect([this]() {
-            ui->slingingLog->appendPlainText("Slinger sent message");
-        }));
+        m_appConnections.emplace_back(s.signal_onSlingerSentData.connect([this](const dataslinger::message::Message& message) {
+            ++m_sendCount;
 
+            const std::size_t sizeBytes = message.size();
+            const double sizeMBytes = static_cast<double>(sizeBytes) / 1000000;
+
+            ui->slingingLog->appendPlainText(QString::number(m_sendCount).append(": " )
+                                             .append("Sent message with size: ").append(QString::number(sizeBytes))
+                                             .append(" bytes (").append(QString::number(sizeMBytes, 'G', 2)).append("MB)"));
+        }));
         m_appConnections.emplace_back(s.signal_onSlingerReceivedData.connect([this](const dataslinger::message::Message& message) {
-            ui->slingingLog->appendPlainText(QString("Received message with size: ").append(QString::number(message.size())));
+            ++m_receiveCount;
+
+            const std::size_t sizeBytes = message.size();
+            const double sizeMBytes = static_cast<double>(sizeBytes) / 1000000;
+
+            ui->slingingLog->appendPlainText(
+                        QString::number(m_receiveCount).append(": ")
+                        .append("Received message with size: ").append(QString::number(sizeBytes))
+                        .append(" bytes (").append(QString::number(sizeMBytes, 'G', 2)).append("MB)"));
         }));
 
         m_appConnections.emplace_back(s.signal_onEvent.connect([this](const dataslinger::event::Event& e) {
-            const dataslinger::event::EventSourceKind source = e.getInfo().getValue<dataslinger::event::EventSourceKind>(dataslinger::event::EventDataKeys::EVENT_SOURCE_KIND);
-
-            ui->slingingLog->appendPlainText(e.what().c_str());
-            ui->slingingLog->appendPlainText("\n");
+            ui->eventLog->appendPlainText(e.what().c_str());
         }));
 
         m_slingerPollingTimer.start(150);
@@ -118,7 +129,7 @@ public:
         });
 
         connect(ui->slingerLaunchButton, &QPushButton::clicked, [this, &s]() {
-            ui->slingerConnectionLog->appendPlainText("Clicked slinger launch button...\n");
+            ui->slingerUiLog->appendPlainText("Clicked slinger launch button...");
 
             const auto backend = static_cast<dataslinger::connection::PreferredBackend>(ui->backendSelectionBox->currentData().toInt());
 
@@ -132,7 +143,7 @@ public:
         });
 
         connect(ui->clearSlingersButton, &QPushButton::clicked, [this, &s]() {
-            ui->slingerConnectionLog->appendPlainText("Clicked clear slingers button...\n");
+            ui->slingerUiLog->appendPlainText("Clicked clear slingers button...");
             s.signal_onClearSlingersRequest();
         });
 
@@ -148,6 +159,9 @@ private:
     QTimer m_slingerPollingTimer;
 
     std::vector<boost::signals2::scoped_connection> m_appConnections; ///< Boost signals2 connections between the UI and the backend application
+
+    std::uint64_t m_receiveCount{0}; ///< Number of received messages so far by slingers on this widget
+    std::uint64_t m_sendCount{0}; ///< Number of attempted sends so far by slingers on this widget
 };
 
 SlingerWindow::SlingerWindow(QWidget* parent) : QMainWindow(parent), d{std::make_unique<SlingerWindow::SlingerWindowImpl>(this)}
