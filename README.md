@@ -4,7 +4,7 @@
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/24n5tiyves9758j0?svg=true)](https://ci.appveyor.com/project/Tw1ddle/dataslinger)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg?style=flat-square)](https://github.com/Tw1ddle/dataslinger/blob/master/LICENSE)
 
-Demo of the [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++17 library for conveniently passing data between processes and over a network.
+Demo of [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++ library for conveniently passing data between processes and over a network.
 
 ## Building
 
