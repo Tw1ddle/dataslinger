@@ -12,11 +12,16 @@
 #include <boost/algorithm/string.hpp>
 #include <boost/scope_exit.hpp>
 
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QMessageBox>
+#include <QMimeData>
 #include <QPlainTextEdit>
 #include <QString>
+#include <QStringList>
 #include <QTimer>
 #include <QVariant>
+#include <QUrl>
 
 #include "dataslinger/connection/connectionoptions.h"
 #include "dataslinger/event/event.h"
@@ -67,6 +72,8 @@ public:
     SlingerWindowImpl(SlingerWindow* pQ) : q{pQ}, ui(std::make_unique<Ui::SlingerWindow>())
     {
         ui->setupUi(q);
+
+        q->setAcceptDrops(true);
 
         connect(ui->eventLog, &QPlainTextEdit::textChanged, [this]() {
             ui->eventLog->ensureCursorVisible();
@@ -152,6 +159,22 @@ public:
         });
     }
 
+    void dragEnterEvent(QDragEnterEvent* event)
+    {
+        event->acceptProposedAction();
+    }
+
+    void dropEvent(QDropEvent* event)
+    {
+        const auto urls = event->mimeData()->urls();
+        if(urls.empty()) {
+            return;
+        }
+        event->acceptProposedAction();
+
+        q->signal_onDropEvent(urls);
+    }
+
 private:
     SlingerWindow* q;
     std::unique_ptr<Ui::SlingerWindow> ui;
@@ -175,6 +198,16 @@ SlingerWindow::~SlingerWindow()
 void SlingerWindow::connectToApplication(dataslinger::app::SlingerAppSignals& s)
 {
     d->connectToApplication(s);
+}
+
+void SlingerWindow::dragEnterEvent(QDragEnterEvent* event)
+{
+    d->dragEnterEvent(event);
+}
+
+void SlingerWindow::dropEvent(QDropEvent* event)
+{
+    d->dropEvent(event);
 }
 
 }

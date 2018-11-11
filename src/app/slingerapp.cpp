@@ -1,9 +1,9 @@
 #include "app/slingerapp.h"
 
+#include <chrono>
 #include <memory>
+#include <random>
 #include <vector>
-
-#include <boost/scope_exit.hpp>
 
 #include "dataslinger/slinger.h"
 #include "dataslinger/connection/connectionoptions.h"
@@ -46,10 +46,11 @@ public:
                 }
             }
             if(command == "sendRandomMessages") {
-                std::vector<std::byte> data(4000000);
-
+                std::default_random_engine generator;
+                generator.seed(static_cast<std::uint32_t>(std::chrono::system_clock::now().time_since_epoch().count()));
+                std::uniform_int_distribution<std::size_t> distribution(1, 100000);
                 for(int i = 0; i < 25; i++) {
-                    send(data);
+                    send(std::vector<std::byte>(distribution(generator)));
                 }
             }
         });
@@ -78,6 +79,14 @@ public:
         m_slingers.emplace_back(dataslinger::makeDataSlinger(onReceive, onEvent, info));
     }
 
+    void send(const dataslinger::message::Message& data)
+    {
+        for(auto& slinger : m_slingers) {
+            slinger.send(data);
+        }
+        m_signals.signal_onSlingerSentData(data);
+    }
+
 private:
     void clearSlingers()
     {
@@ -89,14 +98,6 @@ private:
         for(auto& slinger : m_slingers) {
             slinger.poll();
         }
-    }
-
-    void send(const dataslinger::message::Message& data)
-    {
-        for(auto& slinger : m_slingers) {
-            slinger.send(data);
-        }
-        m_signals.signal_onSlingerSentData(data);
     }
 
     dataslinger::app::SlingerApp* q;
@@ -121,6 +122,11 @@ SlingerAppSignals& SlingerApp::getSignals()
 void SlingerApp::addSlinger(const dataslinger::connection::ConnectionOptions& options)
 {
     return d->addSlinger(options);
+}
+
+void SlingerApp::send(const dataslinger::message::Message& data)
+{
+    d->send(data);
 }
 
 }

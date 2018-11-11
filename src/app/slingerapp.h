@@ -5,6 +5,7 @@
 #include <boost/signals2/signal.hpp>
 
 #include "dataslinger/connection/connectionoptions.h"
+#include "dataslinger/message/message.h"
 
 namespace dataslinger
 {
@@ -34,6 +35,9 @@ public:
 
     /// Adds and starts a slinger given the given options
     void addSlinger(const dataslinger::connection::ConnectionOptions& options);
+
+    /// Sends the given data from this slinger to any connected ones
+    void send(const dataslinger::message::Message& data);
 
 private:
     class SlingerAppImpl;

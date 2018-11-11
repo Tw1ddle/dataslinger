@@ -2,7 +2,9 @@
 
 #include <memory>
 
+#include <QList>
 #include <QMainWindow>
+#include <QUrl>
 
 #include <boost/signals2/signal.hpp>
 
@@ -33,12 +35,19 @@ public:
     explicit SlingerWindow(QWidget* parent = nullptr);
     ~SlingerWindow();
 
+    /// Signal emitted when the user drops something onto the window
+    boost::signals2::signal<void(const QList<QUrl>&)> signal_onDropEvent;
+
     /// Signal emitted before the UI is connected to the backend
     boost::signals2::signal<void(dataslinger::app::SlingerAppSignals&)> signal_beforeConnectToApplication;
     /// Signal emitted after the UI is connected to the backend
     boost::signals2::signal<void(dataslinger::app::SlingerAppSignals&)> signal_afterConnectToApplication;
     /// Connects the UI to the backend app signals
     void connectToApplication(dataslinger::app::SlingerAppSignals& s);
+
+protected:
+    void dragEnterEvent(QDragEnterEvent* event) override;
+    void dropEvent(QDropEvent* event) override;
 
 private:
     class SlingerWindowImpl;

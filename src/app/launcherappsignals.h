@@ -19,7 +19,7 @@ public:
 
     boost::signals2::signal<void()> signal_onOpenSlingerRequest;
     boost::signals2::signal<void(const dataslinger::connection::ConnectionOptions&)> signal_onOpenSlingerWithOptionsRequest;
-    boost::signals2::signal<void(const dataslinger::connection::ConnectionOptions&, const dataslinger::connection::ConnectionOptions&)> signal_onOpenSlingerPairWithOptionsRequest;
+    boost::signals2::signal<void(const dataslinger::connection::ConnectionOptions&)> signal_onOpenSlingerImageDemoRequest;
 };
 
 }
