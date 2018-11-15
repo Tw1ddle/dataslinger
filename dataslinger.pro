@@ -1,8 +1,15 @@
-# C++17 support (MSVC2017)
-QMAKE_CXXFLAGS += /std:c++17
+# C++17 support
+win32-msvc* {
+   QMAKE_CXXFLAGS += /std:c++17
+}
+linux-g++ {
+   QMAKE_CXXFLAGS += -std=c++17
+   # Some linker flags needed on Linux with g++
+   LIBS += -lboost_system -lrt
+}
 
 # Fix for MSVC2017 in debug mode with ChaiScript (C1128 - number of sections exceeded object file format limit)
-QMAKE_CXXFLAGS += /bigobj
+# QMAKE_CXXFLAGS += /bigobj
 
 QT += core gui widgets
 
@@ -12,8 +19,10 @@ TEMPLATE = app
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000 # Disables all the APIs deprecated before Qt 6.0.0
 
 # Include boost
-INCLUDEPATH += C:/Development/boost_1_68_0/
-DEPENDPATH += C:/Development/boost_1_68_0/
+win32 {
+    INCLUDEPATH += C:/Development/boost_1_68_0/
+    DEPENDPATH += C:/Development/boost_1_68_0/
+}
 
 # Include libs
 LIBS += "-LC:/Development/boost_1_68_0/stage/x64/lib/"

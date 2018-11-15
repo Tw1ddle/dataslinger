@@ -70,7 +70,7 @@ dataslinger::message::Message makeMessageFromImage(const QImage& image)
     const std::int32_t width = image.width();
     const std::int32_t height = image.height();
     serializeInt32(&data[0], width);
-    serializeInt32(&data[4], width);
+    serializeInt32(&data[4], height);
 
     for(std::size_t i = 0 ; i < static_cast<std::size_t>(image.sizeInBytes()); i++) {
         data.push_back(static_cast<std::byte>(*(image.bits() + i)));
@@ -92,7 +92,7 @@ std::optional<QImage> makeImageFromData(const std::vector<std::byte>& data)
     const std::int32_t height = parseInt32(widthAndHeight.data() + 4);
 
     const std::size_t expectedSize = static_cast<std::size_t>(8 + (width * height * 4));
-    if(data.size() <= expectedSize) {
+    if(data.size() != expectedSize) {
         return std::nullopt;
     }
 
