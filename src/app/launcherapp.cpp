@@ -41,16 +41,16 @@ std::tuple<dataslinger::ui::SlingerWindow*, dataslinger::app::SlingerApp*> openS
     return std::make_tuple(window, app);
 }
 
-void serializeInt32(std::byte* buf, std::int32_t val)
+void serializeInt32(std::uint8_t* buf, std::int32_t val)
 {
     std::uint32_t uval = static_cast<std::uint32_t>(val);
-    buf[0] = static_cast<std::byte>(uval);
-    buf[1] = static_cast<std::byte>(uval >> 8);
-    buf[2] = static_cast<std::byte>(uval >> 16);
-    buf[3] = static_cast<std::byte>(uval >> 24);
+    buf[0] = static_cast<std::uint8_t>(uval);
+    buf[1] = static_cast<std::uint8_t>(uval >> 8);
+    buf[2] = static_cast<std::uint8_t>(uval >> 16);
+    buf[3] = static_cast<std::uint8_t>(uval >> 24);
 }
 
-std::int32_t parseInt32(const std::byte* buf)
+std::int32_t parseInt32(const std::uint8_t* buf)
 {
     // This prevents buf[i] from being promoted to a signed int.
     std::uint32_t u0 = static_cast<std::uint32_t>(buf[0]);
@@ -73,25 +73,25 @@ dataslinger::message::Message makeMessageFromImage(const QImage& image)
     serializeInt32(&data[4], height);
 
     for(std::size_t i = 0 ; i < static_cast<std::size_t>(image.sizeInBytes()); i++) {
-        data.push_back(static_cast<std::byte>(*(image.bits() + i)));
+        data.push_back(static_cast<std::uint8_t>(*(image.bits() + i)));
     }
 
     return data;
 }
 
-std::optional<QImage> makeImageFromData(const std::vector<std::byte>& data)
+std::optional<QImage> makeImageFromData(const std::vector<std::uint8_t>& data)
 {
     // Read out width and height, followed by byte data
     if(data.size() <= 8) {
         return std::nullopt;
     }
 
-    const std::vector<std::byte> widthAndHeight(data.begin(), data.begin() + 8);
+    const std::vector<std::uint8_t> widthAndHeight(data.begin(), data.begin() + 8);
 
     const std::int32_t width = parseInt32(widthAndHeight.data());
     const std::int32_t height = parseInt32(widthAndHeight.data() + 4);
 
-    const std::size_t expectedSize = static_cast<std::size_t>(8 + (width * height * 4));
+    const std::size_t expectedSize = static_cast<std::size_t>(std::max(0, 8 + (width * height * 4)));
     if(data.size() != expectedSize) {
         return std::nullopt;
     }

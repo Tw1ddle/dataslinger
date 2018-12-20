@@ -35,7 +35,7 @@ public:
         });
 
         m_signals.signal_onCommand.connect([this](const std::string& command) {
-            std::vector<std::byte> data(4000000);
+            std::vector<std::uint8_t> data(4000000);
 
             if(command == "sendMessage") {
                 send(data);
@@ -50,7 +50,7 @@ public:
                 generator.seed(static_cast<std::uint32_t>(std::chrono::system_clock::now().time_since_epoch().count()));
                 std::uniform_int_distribution<std::size_t> distribution(1, 100000);
                 for(int i = 0; i < 25; i++) {
-                    send(std::vector<std::byte>(distribution(generator)));
+                    send(std::vector<std::uint8_t>(distribution(generator)));
                 }
             }
         });
