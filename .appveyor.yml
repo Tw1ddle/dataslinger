@@ -10,7 +10,7 @@ configuration:
 # Set the environment variables and paths to make
 install:
   - git submodule update --init --recursive
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"
   - set make=nmake.exe
 
 before_build:
