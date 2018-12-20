@@ -1,7 +1,10 @@
 environment:
   matrix:
-    - QTDIR: C:\Qt\5.11.2\msvc2017_64
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      QTDIR: C:\Qt\5.11.2\msvc2017_64
       COMPILER_NAME: msvc2017_64
+      MSVC_SETUP_PATH: C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat
+      MSVC_SETUP_ARG: x64
 
 configuration:
   - release
@@ -10,7 +13,7 @@ configuration:
 # Set the environment variables and paths to make
 install:
   - git submodule update --init --recursive
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat"
+  - call "%MSVC_SETUP_PATH%" %MSVC_SETUP_ARG%
   - set make=nmake.exe
 
 before_build:
