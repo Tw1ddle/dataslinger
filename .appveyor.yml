@@ -14,13 +14,14 @@ configuration:
 install:
   - git submodule update --init --recursive
   - call "%MSVC_SETUP_PATH%" %MSVC_SETUP_ARG%
+  - '%QTDIR%\bin\qtenv2.bat'
   - set make=nmake.exe
 
 before_build:
   - cd %APPVEYOR_BUILD_FOLDER%
 
   # Run qmake
-  - qmake CONFIG+=%CONFIGURATION% dataslinger.pro
+  - qmake "CONFIG+=APPVEYOR" dataslinger.pro
 
 # Build the project
 build_script:
