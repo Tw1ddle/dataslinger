@@ -12,6 +12,19 @@ matrix:
         - sourceline: 'ppa:mhier/libboost-latest'
         - ubuntu-toolchain-r-test
         packages:
+        - g++-7
+        - libstdc++-7-dev
+        - boost1.68
+    env:
+    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+  
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - sourceline: 'ppa:mhier/libboost-latest'
+        - ubuntu-toolchain-r-test
+        packages:
         - g++-8
         - libstdc++-8-dev
         - boost1.68
