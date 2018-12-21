@@ -4,7 +4,7 @@ win32-msvc* {
 }
 
 TRAVIS|linux-g++ {
-    CONFIG += c++1z
+    QMAKE_CXXFLAGS += -std=gnu++17
     # Some linker flags needed on Linux with g++
     LIBS += -lboost_system -lrt
 }
