@@ -1,3 +1,5 @@
+CONFIG += c++17
+
 # C++17 support (MSVC2017)
 win32-msvc* {
     QMAKE_CXXFLAGS += /std:c++17
