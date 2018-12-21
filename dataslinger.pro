@@ -1,11 +1,9 @@
-CONFIG += c++17
-
 # C++17 support (MSVC2017)
 win32-msvc* {
     QMAKE_CXXFLAGS += /std:c++17
 }
 
-linux-g++ {
+TRAVIS|linux-g++ {
     QMAKE_CXXFLAGS += -std=c++17
     # Some linker flags needed on Linux with g++
     LIBS += -lboost_system -lrt
@@ -27,11 +25,6 @@ win32:APPVEYOR {
     INCLUDEPATH += C:/Development/boost_1_68_0/
     DEPENDPATH += C:/Development/boost_1_68_0/
     LIBS += "-LC:/Development/boost_1_68_0/stage/x64/lib/"
-}
-
-TRAVIS {
-    QMAKE_CXXFLAGS += -std=c++17
-    LIBS += -lboost_system -lrt
 }
 
 include($$PWD/lib/dataslinger-lib/dataslinger.pri)
