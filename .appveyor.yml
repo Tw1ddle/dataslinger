@@ -29,13 +29,13 @@ build_script:
   - '%make%'
   - ls -a
   - mkdir dataslinger_build
-  - move %APPVEYOR_BUILD_FOLDER%\release\dataslinger.exe %APPVEYOR_BUILD_FOLDER%\dataslinger_build\dataslinger_%APPVEYOR_BUILD_NUMBER%_%APPVEYOR_BUILD_ID%_%COMPILER_NAME%_%CONFIGURATION%.exe
+  - move %APPVEYOR_BUILD_FOLDER%\release\dataslinger.exe %APPVEYOR_BUILD_FOLDER%\dataslinger_build\dataslinger.exe
   - windeployqt %APPVEYOR_BUILD_FOLDER%\dataslinger_build
-  - 7z a dataslinger.zip %APPVEYOR_BUILD_FOLDER%\dataslinger_build
+  - 7z a dataslinger_%APPVEYOR_BUILD_NUMBER%_%APPVEYOR_BUILD_ID%_%COMPILER_NAME%_%CONFIGURATION%.zip "%APPVEYOR_BUILD_FOLDER%\dataslinger_build\*"
 
 # Gather artifacts
 artifacts:
-  - path: dataslinger.zip
+  - path: dataslinger*.zip
     name: dataslinger
     type: File
 
