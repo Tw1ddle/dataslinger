@@ -28,13 +28,14 @@ build_script:
   - cd %APPVEYOR_BUILD_FOLDER%
   - '%make%'
   - ls -a
-
-# TODO
-#  - move geometrize_installer.exe geometrize_installer_%APPVEYOR_BUILD_NUMBER%_%APPVEYOR_BUILD_ID%_%COMPILER_NAME%_%CONFIGURATION%.exe
+  - mkdir dataslinger_build
+  - move release/dataslinger.exe dataslinger_build/dataslinger_%APPVEYOR_BUILD_NUMBER%_%APPVEYOR_BUILD_ID%_%COMPILER_NAME%_%CONFIGURATION%.exe
+  - windeployqt %APPVEYOR_BUILD_FOLDER%\dataslinger_build
+  - 7z a dataslinger.zip %APPVEYOR_BUILD_FOLDER%\dataslinger_build
 
 # Gather artifacts
 artifacts:
-  - path: '**\dataslinger*.exe'
+  - path: dataslinger.zip
     name: dataslinger
     type: File
 
