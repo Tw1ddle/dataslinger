@@ -21,12 +21,15 @@ win32:APPVEYOR {
     INCLUDEPATH += C:/Libraries/boost_1_67_0
     DEPENDPATH += C:/Libraries/boost_1_67_0
     LIBS += "-LC:/Libraries/boost_1_67_0/lib64-msvc-14.1"
-} else:linux {
-
 } else {
     INCLUDEPATH += C:/Development/boost_1_68_0/
     DEPENDPATH += C:/Development/boost_1_68_0/
     LIBS += "-LC:/Development/boost_1_68_0/stage/x64/lib/"
+}
+
+TRAVIS {
+    QMAKE_CXXFLAGS += -std=c++17
+    LIBS += -lboost_system -lrt
 }
 
 include($$PWD/lib/dataslinger-lib/dataslinger.pri)
