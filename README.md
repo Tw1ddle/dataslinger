@@ -6,6 +6,13 @@
 
 Demo of [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++ library for conveniently passing data between processes and over a network.
 
+## Usage
+
+Download the pre-built demo [here](https://s3.amazonaws.com/dataslinger-bucket/index.html). Open the tool and select a demo activity. 
+
+ * Use the sendMessages command in the console to send arbitrary data between slingers and receivers.
+ * In the image-based activities, try drag-dropping images onto the window.
+
 ## Building
 
 This is a Qt app written in C++. Requires a compiler with C++17 support, depends on boost 1.68 and a recent version of Qt.
