@@ -140,13 +140,6 @@ public:
                         continue;
                     }
                     const auto data = makeMessageFromImage(image);
-
-                    //QLabel* imgLabel = new QLabel(window);
-                    //imgLabel->setText("Server Side Image");
-                    //imgLabel->setWindowFlags(Qt::Window);
-                    //imgLabel->setPixmap(QPixmap::fromImage(image));
-                    //imgLabel->show();
-
                     app->send(data);
                 }
             });
@@ -167,6 +160,11 @@ public:
                 imgLabel->setWindowFlags(Qt::Window);
                 imgLabel->setPixmap(QPixmap::fromImage(*image));
                 imgLabel->show();
+
+                // Set the position of the label to the center of the slinger that received it
+                if(window) {
+                    imgLabel->move(window->window()->frameGeometry().topLeft() + window->window()->rect().center() - imgLabel->rect().center());
+                }
             });
         });
     }

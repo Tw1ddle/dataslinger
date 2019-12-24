@@ -8,10 +8,10 @@ Demo of [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++ lib
 
 ## Usage
 
-Download the pre-built demo [here](https://s3.amazonaws.com/dataslinger-bucket/index.html). Open the tool and select a demo activity. 
+Download the pre-built demo [here](https://s3.amazonaws.com/dataslinger-bucket/index.html). Open the application and select a demo activity. 
 
- * Use the sendMessages command in the console to send arbitrary data between slingers and receivers.
- * In the image-based activities, try drag-dropping images onto the window.
+ * Use the sendMessages command in the console to send chunks of data between slingers and receivers.
+ * In the image-based activities, try drag-dropping images onto the window and observe the transferred images pop up on the receiving end.
 
 ## Building
 
