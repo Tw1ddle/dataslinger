@@ -30,7 +30,7 @@ before_install:
 
 install:
   # Install Qt
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libgl1-mesa-glx qt512base qt512svg qt512imageformats qt512tools; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install libgl1-mesa-dev qt512base qt512svg qt512imageformats qt512tools; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source /opt/qt512/bin/qt512-env.sh; fi
 
 script:
