@@ -6,9 +6,6 @@
 #include <vector>
 
 #include "dataslinger/slinger.h"
-#include "dataslinger/connection/connectionoptions.h"
-#include "dataslinger/message/message.h"
-#include "dataslinger/event/event.h"
 
 #include "app/slingerappsignals.h"
 

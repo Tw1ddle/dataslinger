@@ -23,9 +23,7 @@
 #include <QVariant>
 #include <QUrl>
 
-#include "dataslinger/connection/connectionoptions.h"
-#include "dataslinger/event/event.h"
-#include "dataslinger/message/message.h"
+#include "dataslinger/slinger.h"
 
 #include "app/slingerappsignals.h"
 

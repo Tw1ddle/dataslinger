@@ -4,9 +4,7 @@
 
 #include <boost/signals2/signal.hpp>
 
-#include "dataslinger/connection/connectionoptions.h"
-#include "dataslinger/event/event.h"
-#include "dataslinger/message/message.h"
+#include "dataslinger/slinger.h"
 
 namespace dataslinger
 {

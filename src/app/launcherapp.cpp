@@ -15,7 +15,7 @@
 #include <QMimeData>
 #include <QUrl>
 
-#include "dataslinger/connection/connectionoptions.h"
+#include "dataslinger/slinger.h"
 
 #include "app/launcherappsignals.h"
 #include "app/slingerapp.h"

@@ -1,11 +1,7 @@
-# C++17 support (MSVC2017)
-win32-msvc* {
-    QMAKE_CXXFLAGS += /std:c++17
-}
+CONFIG += c++17
 
-TRAVIS|linux-g++ {
-    CONFIG += c++1z
-    # Some linker flags needed on Linux with g++
+TRAVIS|linux {
+    # Some linker flags needed on Linux (with g++ at least)
     LIBS += -lboost_system -lrt
 }
 

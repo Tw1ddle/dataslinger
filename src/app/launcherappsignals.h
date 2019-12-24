@@ -2,7 +2,7 @@
 
 #include <boost/signals2/signal.hpp>
 
-#include "dataslinger/connection/connectionoptions.h"
+#include "dataslinger/slinger.h"
 
 namespace dataslinger
 {
