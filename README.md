@@ -14,7 +14,7 @@ Download the pre-built demo [here](https://s3.amazonaws.com/dataslinger-bucket/i
 
 ## Building
 
-This is a Qt app written in C++. Requires a compiler with C++17 support, depends on boost 1.68+ and a recent version of Qt.
+This is a Qt app written in C++. Requires a compiler with C++17 support, depends on boost 1.78.0+ and a recent version of Qt.
 
 ## Screenshots
 

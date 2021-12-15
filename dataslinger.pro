@@ -14,9 +14,9 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000 # Disables all the APIs depreca
 
 # Include boost
 win32:APPVEYOR {
-    INCLUDEPATH += C:/Libraries/boost_1_67_0
-    DEPENDPATH += C:/Libraries/boost_1_67_0
-    LIBS += "-LC:/Libraries/boost_1_67_0/lib64-msvc-14.1"
+    INCLUDEPATH += C:/Libraries/boost_1_77_0
+    DEPENDPATH += C:/Libraries/boost_1_77_0
+    LIBS += "-LC:/Libraries/boost_1_77_0/lib64-msvc-14.2"
 } else {
     INCLUDEPATH += C:/boost_1_78_0/
     DEPENDPATH += C:/boost_1_78_0/
