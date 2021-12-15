@@ -1,6 +1,6 @@
 CONFIG += c++17
 
-TRAVIS|linux {
+linux {
     # Some linker flags needed on Linux (with g++ at least)
     LIBS += -lboost_system -lrt
 }
