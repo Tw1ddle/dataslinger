@@ -1,8 +1,7 @@
 [![Dataslinger Logo](https://github.com/Tw1ddle/dataslinger/blob/master/screenshots/logo.png?raw=true "Dataslinger logo")](https://github.com/Tw1ddle/dataslinger)
 
-[![Travis Build Status](https://img.shields.io/travis/Tw1ddle/dataslinger.svg?style=flat-square)](https://travis-ci.org/Tw1ddle/dataslinger)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/24n5tiyves9758j0?svg=true)](https://ci.appveyor.com/project/Tw1ddle/dataslinger)
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg?style=flat-square)](https://github.com/Tw1ddle/dataslinger/blob/master/LICENSE)
+[![AppVeyor Build Status Badge](https://ci.appveyor.com/api/projects/status/github/Tw1ddle/dataslinger)](https://ci.appveyor.com/project/Tw1ddle/dataslinger)
 
 Demo of [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++ library for conveniently passing data between processes and over a network.
 
@@ -15,7 +14,7 @@ Download the pre-built demo [here](https://s3.amazonaws.com/dataslinger-bucket/i
 
 ## Building
 
-This is a Qt app written in C++. Requires a compiler with C++17 support, depends on boost 1.68 and a recent version of Qt.
+This is a Qt app written in C++. Requires a compiler with C++17 support, depends on boost 1.68+ and a recent version of Qt.
 
 ## Screenshots
 
