@@ -18,9 +18,9 @@ win32:APPVEYOR {
     DEPENDPATH += C:/Libraries/boost_1_67_0
     LIBS += "-LC:/Libraries/boost_1_67_0/lib64-msvc-14.1"
 } else {
-    INCLUDEPATH += C:/Development/boost_1_68_0/
-    DEPENDPATH += C:/Development/boost_1_68_0/
-    LIBS += "-LC:/Development/boost_1_68_0/stage/x64/lib/"
+    INCLUDEPATH += C:/boost_1_78_0/
+    DEPENDPATH += C:/boost_1_78_0/
+    LIBS += "-LC:/boost_1_78_0/stage/x64/lib/"
 }
 
 include($$PWD/lib/dataslinger-lib/dataslinger.pri)
