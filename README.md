@@ -1,9 +1,8 @@
 [![Dataslinger Logo](https://github.com/Tw1ddle/dataslinger/blob/master/screenshots/logo.png?raw=true "Dataslinger logo")](https://github.com/Tw1ddle/dataslinger)
 
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg?style=flat-square)](https://github.com/Tw1ddle/dataslinger/blob/master/LICENSE)
-[![AppVeyor Build Status Badge](https://ci.appveyor.com/api/projects/status/github/Tw1ddle/dataslinger)](https://ci.appveyor.com/project/Tw1ddle/dataslinger)
 
-Demo of [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++ library for conveniently passing data between processes and over a network.
+Demo of [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++ library for conveniently passing data between processes and over a network. I no longer maintain this, don't use it!
 
 ## Usage
 
