@@ -2,11 +2,11 @@
 
 [![License](https://img.shields.io/badge/License-GPL%20v3-blue.svg?style=flat-square)](https://github.com/Tw1ddle/dataslinger/blob/master/LICENSE)
 
-Demo of [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++ library for conveniently passing data between processes and over a network. I no longer maintain this, don't use it!
+I no longer maintain this project, don't use this!
+
+Demo of [dataslinger-lib](https://github.com/Tw1ddle/dataslinger-lib), a C++ library for conveniently passing data between processes and over a network.
 
 ## Usage
-
-Download the pre-built demo [here](https://s3.amazonaws.com/dataslinger-bucket/index.html). Open the application and select a demo activity. 
 
  * Use the sendMessages command in the console to send chunks of data between slingers and receivers.
  * In the image-based activities, try drag-dropping images onto the window and observe the transferred images pop up on the receiving end.
